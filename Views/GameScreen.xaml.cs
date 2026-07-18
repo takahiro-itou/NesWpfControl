@@ -46,13 +46,15 @@ public  partial class  GameScreen : UserControl
         System.Drawing.Bitmap   imgCanvas;
         System.Drawing.Graphics grpCanvas;
 
-        imgCanvas = new System.Drawing.Bitmap(picView.Width, picView.Height);
+        //imgCanvas = new System.Drawing.Bitmap(picView.Width, picView.Height);
+        imgCanvas = new System.Drawing.Bitmap(256, 240);
         grpCanvas = System.Drawing.Graphics.FromImage(imgCanvas);
 
-        grpCanvas.FillRectangle(Brushes.White, grpCanvas.VisibleClipBounds);
+        grpCanvas.FillRectangle(
+                System.Drawing.Brushes.White, grpCanvas.VisibleClipBounds);
         grpCanvas.Dispose();
 
-        picView.Image = imgCanvas;
+        //  picView.Image = imgCanvas;
     }
 
     //----------------------------------------------------------------
