@@ -2,7 +2,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <AssemblyName>WpfControl</AssemblyName>
+    <AssemblyName>NesWpfControl</AssemblyName>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
     <ImplicitUsings>enable</ImplicitUsings>
     <LangVersion>10.0</LangVersion>
