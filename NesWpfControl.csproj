@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <AssemblyName>WpfControl</AssemblyName>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>10.0</LangVersion>
+    <Nullable>enable</Nullable>
+    <Platforms>x64;Win32</Platforms>
+    <RootNamespace>NesWpfControl</RootNamespace>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <Import Project="..\Props\OutputLibs.props" />
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net8.0-windows' ">
+    <ProjectReference Include="..\Cli.Net8\Wrapper.Net80.vcxproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+  </ItemGroup>
+
+</Project>

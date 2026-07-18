@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <AssemblyName>WpfControl</AssemblyName>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>10.0</LangVersion>
+    <Nullable>enable</Nullable>
+    <Platforms>x64;Win32</Platforms>
+    <RootNamespace>NesWpfControl</RootNamespace>
+    <TargetFrameworks>
+      net48;
+    </TargetFrameworks>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <Import Project="..\Props\OutputLibs.props" />
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
+    <ProjectReference Include="..\Cli.NetFramework4.8\Wrapper.Net48.vcxproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+  </ItemGroup>
+
+</Project>
