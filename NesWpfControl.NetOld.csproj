@@ -17,6 +17,14 @@
 
   <Import Project="..\Props\OutputLibs.props" />
 
+  <ItemGroup>
+    <PackageReference Include="System.Drawing.Common" Version="10.0.*" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Import Include="System.Drawing" />
+  </ItemGroup>
+
   <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
     <ProjectReference Include="..\Cli.NetFramework4.8\Wrapper.Net48.vcxproj" />
   </ItemGroup>
