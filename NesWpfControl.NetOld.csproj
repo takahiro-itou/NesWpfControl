@@ -7,7 +7,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <LangVersion>10.0</LangVersion>
     <Nullable>enable</Nullable>
-    <Platforms>x64;Win32</Platforms>
+    <Platforms>x64;x86</Platforms>
     <RootNamespace>NesWpfControl</RootNamespace>
     <TargetFrameworks>
       net48;
