@@ -20,15 +20,15 @@ namespace  NesWpfControl.Views  {
 public  partial class  GameScreen : UserControl
 {
 
-    //----------------------------------------------------------------
-    /**   デフォルトコンストラクタ。
-    **
-    **/
-    public  GameScreen()
-    {
-        InitializeComponent();
-        m_imgBuffer = new System.Drawing.Bitmap(512, 480);
-    }
+//----------------------------------------------------------------
+/**   デフォルトコンストラクタ。
+**
+**/
+public  GameScreen()
+{
+    InitializeComponent();
+    m_imgBuffer = new System.Drawing.Bitmap(512, 480);
+}
 
 
 //========================================================================
@@ -36,132 +36,138 @@ public  partial class  GameScreen : UserControl
 //
 //
 
-    //----------------------------------------------------------------
-    /**   画像をクリアする。
-    **
-    **/
-    public  virtual  void
-    clearScreen()
-    {
-        System.Drawing.Bitmap   imgCanvas;
-        System.Drawing.Graphics grpCanvas;
+//----------------------------------------------------------------
+/**   画像をクリアする。
+**
+**/
+public  virtual  void
+clearScreen()
+{
+    System.Drawing.Bitmap   imgCanvas;
+    System.Drawing.Graphics grpCanvas;
 
-        //imgCanvas = new System.Drawing.Bitmap(picView.Width, picView.Height);
-        imgCanvas = new System.Drawing.Bitmap(256, 240);
-        grpCanvas = System.Drawing.Graphics.FromImage(imgCanvas);
+    //imgCanvas = new System.Drawing.Bitmap(picView.Width, picView.Height);
+    imgCanvas = new System.Drawing.Bitmap(256, 240);
+    grpCanvas = System.Drawing.Graphics.FromImage(imgCanvas);
 
-        grpCanvas.FillRectangle(
-                System.Drawing.Brushes.White, grpCanvas.VisibleClipBounds);
-        grpCanvas.Dispose();
+    grpCanvas.FillRectangle(
+            System.Drawing.Brushes.White, grpCanvas.VisibleClipBounds);
+    grpCanvas.Dispose();
 
-        //  picView.Image = imgCanvas;
+    //  picView.Image = imgCanvas;
+}
+
+//----------------------------------------------------------------
+/**   デフォルトの描画処理を行う。
+**
+**/
+public  virtual  void
+drawScreen()
+{
+    this.m_wManPpu?.drawScreen();
+}
+
+//----------------------------------------------------------------
+/**   画面を初期化する。
+**
+**/
+public  virtual  System.Boolean
+initializeScreenImage(int W, int H)
+{
+    IntPtr  hDC;
+    System.Drawing.Graphics grpBuffer;
+
+    grpBuffer = System.Drawing.Graphics.FromImage(m_imgBuffer);
+
+    hDC = grpBuffer.GetHdc();
+    if ( m_screenImage == null ) {
+        m_screenImage = m_bitmapRenderer.createImage(hDC, W, H);
     }
+    grpBuffer.ReleaseHdc(hDC);
+    grpBuffer.Dispose();
 
-    //----------------------------------------------------------------
-    /**   デフォルトの描画処理を行う。
-    **
-    **/
-    public  virtual  void
-    drawScreen()
-    {
-        this.m_wManPpu?.drawScreen();
+    return true;
+}
+
+//----------------------------------------------------------------
+/**   PPU を設定する。
+**
+**/
+public  virtual  System.Boolean
+setupPpuManager(NesDbgWrap.NesMan.BasePpuCore manPpu)
+{
+    if ( this.m_screenImage == null ) {
+        return  false;
     }
+    manPpu.TargetImage  = this.m_screenImage;
+    this.m_wManPpu  = manPpu;
 
-    //----------------------------------------------------------------
-    /**   画面を初期化する。
-    **
-    **/
-    public  virtual  System.Boolean
-    initializeScreenImage(int W, int H)
-    {
-        IntPtr  hDC;
-        System.Drawing.Graphics grpBuffer;
+    return  true;
+}
 
-        grpBuffer = System.Drawing.Graphics.FromImage(m_imgBuffer);
+//----------------------------------------------------------------
+/**   ゲーム画面を表示する。
+**
+**/
+public  virtual  void
+showScreen()
+{
+    System.Drawing.Bitmap   imgCanvas;
+    System.Drawing.Graphics grpCanvas;
+    IntPtr  hDC;
+    System.Drawing.Brush    brushBG;
+    System.Drawing.Color    colorBG;
 
-        hDC = grpBuffer.GetHdc();
-        if ( m_screenImage == null ) {
-            m_screenImage = m_bitmapRenderer.createImage(hDC, W, H);
-        }
-        grpBuffer.ReleaseHdc(hDC);
-        grpBuffer.Dispose();
+    imgCanvas = this.m_imgBuffer;
+    grpCanvas = System.Drawing.Graphics.FromImage(imgCanvas);
 
-        return true;
-    }
+    colorBG = System.Drawing.Color.FromArgb(0xFF, 0x00, 0x00, 0xFF);
+    brushBG = new System.Drawing.SolidBrush(colorBG);
+    grpCanvas.FillRectangle(brushBG, grpCanvas.VisibleClipBounds);
 
-    //----------------------------------------------------------------
-    /**   PPU を設定する。
-    **
-    **/
-    public  virtual  System.Boolean
-    setupPpuManager(NesDbgWrap.NesMan.BasePpuCore manPpu)
-    {
-        if ( this.m_screenImage == null ) {
-            return  false;
-        }
-        manPpu.TargetImage  = this.m_screenImage;
-        this.m_wManPpu  = manPpu;
+    hDC = grpCanvas.GetHdc();
+    m_bitmapRenderer.drawImage(hDC, 0, 0, 256, 240, 0, 0);
+    grpCanvas.ReleaseHdc(hDC);
+    grpCanvas.Dispose();
 
-        return  true;
-    }
+    //  picView.Image = imgCanvas;
+}
 
-    //----------------------------------------------------------------
-    /**   ゲーム画面を表示する。
-    **
-    **/
-    public  virtual  void
-    showScreen()
-    {
-        System.Drawing.Bitmap   imgCanvas;
-        System.Drawing.Graphics grpCanvas;
-        IntPtr  hDC;
-        System.Drawing.Brush    brushBG;
-        System.Drawing.Color    colorBG;
 
-        imgCanvas = this.m_imgBuffer;
-        grpCanvas = System.Drawing.Graphics.FromImage(imgCanvas);
+//========================================================================
+//
+//    Properties.
+//
 
-        colorBG = System.Drawing.Color.FromArgb(0xFF, 0x00, 0x00, 0xFF);
-        brushBG = new System.Drawing.SolidBrush(colorBG);
-        grpCanvas.FillRectangle(brushBG, grpCanvas.VisibleClipBounds);
+//----------------------------------------------------------------
+/**   MarginAreaColor プロパティ
+**
+**/
+[Browsable(true)
+  , Description("余白部分の背景色")
+  , Category("表示")
+]
+[DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+public  System.Drawing.Color
+MarginAreaColor
+{
+    get { return  this.m_marginColor; }
+    set { this.m_marginColor = value; }
+}
 
-        hDC = grpCanvas.GetHdc();
-        m_bitmapRenderer.drawImage(hDC, 0, 0, 256, 240, 0, 0);
-        grpCanvas.ReleaseHdc(hDC);
-        grpCanvas.Dispose();
-
-        //  picView.Image = imgCanvas;
-    }
-
-    //----------------------------------------------------------------
-    /**   MarginAreaColor プロパティ
-    **
-    **/
-    [Browsable(true)
-      , Description("余白部分の背景色")
-      , Category("表示")
-    ]
-    [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
-    public  System.Drawing.Color
-    MarginAreaColor
-    {
-        get { return  this.m_marginColor; }
-        set { this.m_marginColor = value; }
-    }
-
-    //----------------------------------------------------------------
-    /**   SourcePicture プロパティ
-    **
-    **/
-    [Browsable(true)
-      , Description("描画領域")
-      , Category("表示")
-    ]
-    public  System.Windows.Controls.Image
-    SourcePicture
-    {
-        get { return  this.picView; }
-    }
+//----------------------------------------------------------------
+/**   SourcePicture プロパティ
+**
+**/
+[Browsable(true)
+  , Description("描画領域")
+  , Category("表示")
+]
+public  System.Windows.Controls.Image
+SourcePicture
+{
+    get { return  this.picView; }
+}
 
 
 //========================================================================
@@ -169,19 +175,19 @@ public  partial class  GameScreen : UserControl
 //    Member Variables.
 //
 
-    /**   イメージレンダラ。    **/
-    private NesDbgWrap.Images.BitmapRenderer    m_bitmapRenderer
-        = new NesDbgWrap.Images.BitmapRenderer();
+/**   イメージレンダラ。    **/
+private NesDbgWrap.Images.BitmapRenderer    m_bitmapRenderer
+    = new NesDbgWrap.Images.BitmapRenderer();
 
-    /**   PPU マネージャ。      **/
-    private NesDbgWrap.NesMan.BasePpuCore?      m_wManPpu;
+/**   PPU マネージャ。      **/
+private NesDbgWrap.NesMan.BasePpuCore?      m_wManPpu;
 
-    /**   イメージ用バッファ。  **/
-    System.Drawing.Bitmap                       m_imgBuffer;
+/**   イメージ用バッファ。  **/
+System.Drawing.Bitmap                       m_imgBuffer;
 
-    private NesDbgWrap.Images.FullColorImage?   m_screenImage;
+private NesDbgWrap.Images.FullColorImage?   m_screenImage;
 
-    private System.Drawing.Color    m_marginColor;
+private System.Drawing.Color    m_marginColor;
 
 }   //  End class  GameScreen
 
