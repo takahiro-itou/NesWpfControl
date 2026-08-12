@@ -12,13 +12,17 @@
 **                                                                      **
 *************************************************************************/
 
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using System.Windows.Media.Imaging;
 
-using FullColorImage = SampleWrapper.Images.FullColorImage;
+
+using FullColorImage = NesDbgWrapr.Images.FullColorImage;
 
 
 namespace  NesWpfControl.ViewModels  {
 
-public  class  GameScreenViewModel
+public  class  GameScreenViewModel : INotifyPropertyChanged
 {
 
 //========================================================================
