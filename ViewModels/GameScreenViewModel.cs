@@ -14,10 +14,11 @@
 
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 
-using FullColorImage = NesDbgWrapr.Images.FullColorImage;
+using FullColorImage = NesDbgWrap.Images.FullColorImage;
 
 
 namespace  NesWpfControl.ViewModels  {
@@ -36,6 +37,31 @@ public  class  GameScreenViewModel : INotifyPropertyChanged
 **/
 public  GameScreenViewModel()
 {
+    const  int  nWidth  = 256;
+    const  int  nHeight = 240;
+    int         cbPixel = 4;
+    int         lStride = 0;
+
+    System.IntPtr       ptrBuf;
+    WriteableBitmap     bmpCanvas;
+
+    bmpCanvas = new WriteableBitmap(
+            nWidth, nHeight, 96, 96,
+            PixelFormats.Pbgra32, null);
+    this.m_mainImage = new FullColorImage();
+
+    bmpCanvas.Lock();
+    cbPixel = (bmpCanvas.Format.BitsPerPixel + 7) >> 3;
+    lStride = bmpCanvas.BackBufferStride;
+
+    ptrBuf  = bmpCanvas.BackBuffer;
+    this.m_mainImage.createImage(nWidth, nHeight, cbPixel, lStride, ptrBuf);
+    bmpCanvas.Unlock();
+
+    m_imgBuffer = new FullColorImage();
+    this.m_imgBuffer.allocateImage(nWidth, nHeight, cbPixel, lStride);
+
+    this.m_bmpCanvas = bmpCanvas;
 }
 
 
