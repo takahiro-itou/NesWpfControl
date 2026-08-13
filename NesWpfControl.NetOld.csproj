@@ -33,6 +33,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Include="Models\PpuManagerModel.cs" />
     <Compile Include="ViewModels\GameScreenViewModel.cs" />
     <Compile Include="Views\GameScreen.xaml.cs" />
   </ItemGroup>

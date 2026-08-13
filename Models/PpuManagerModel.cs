@@ -12,7 +12,7 @@
 **                                                                      **
 *************************************************************************/
 
-using FullColorImage = SampleWrapper.Images.FullColorImage;
+using FullColorImage = NesDbgWrap.Images.FullColorImage;
 
 
 namespace  NesWpfControl.Models  {

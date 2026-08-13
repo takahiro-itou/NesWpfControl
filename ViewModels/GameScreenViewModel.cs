@@ -15,12 +15,13 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
+using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 using WpfControl.Common;
 
-using NesWpfControl.Models
+using NesWpfControl.Models;
 
 using FullColorImage = NesDbgWrap.Images.FullColorImage;
 
