@@ -14,9 +14,13 @@
 
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
+using WpfControl.Common;
+
+using NesWpfControl.Models
 
 using FullColorImage = NesDbgWrap.Images.FullColorImage;
 
@@ -53,6 +57,7 @@ GameScreenViewModel()
     this.m_imgBuffer = new FullColorImage();
     this.m_imgWidth  = nWidth;
     this.m_imgHeight = nHeight;
+    this.m_trgModel = new PpuManagerModel(nWidth, nHeight, cbPixel, lStride);
 
     bmpCanvas.Lock();
     cbPixel = (bmpCanvas.Format.BitsPerPixel + 7) >> 3;
@@ -235,6 +240,8 @@ updateProgress(int progressValue)
 //
 
 private  readonly   FullColorImage          m_mainImage;
+
+private  readonly   PpuManagerModel         m_trgModel;
 
 private  readonly   FullColorImage          m_imgBuffer;
 private  readonly   int                     m_imgWidth;
