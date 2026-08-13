@@ -35,7 +35,8 @@ public  class  GameScreenViewModel : INotifyPropertyChanged
 /**   コンストラクタ。
 **
 **/
-public  GameScreenViewModel()
+public
+GameScreenViewModel()
 {
     const  int  nWidth  = 256;
     const  int  nHeight = 240;
@@ -49,6 +50,9 @@ public  GameScreenViewModel()
             nWidth, nHeight, 96, 96,
             PixelFormats.Pbgra32, null);
     this.m_mainImage = new FullColorImage();
+    this.m_imgBuffer = new FullColorImage();
+    this.m_imgWidth  = nWidth;
+    this.m_imgHeight = nHeight;
 
     bmpCanvas.Lock();
     cbPixel = (bmpCanvas.Format.BitsPerPixel + 7) >> 3;
@@ -58,10 +62,19 @@ public  GameScreenViewModel()
     this.m_mainImage.createImage(nWidth, nHeight, cbPixel, lStride, ptrBuf);
     bmpCanvas.Unlock();
 
-    m_imgBuffer = new FullColorImage();
     this.m_imgBuffer.allocateImage(nWidth, nHeight, cbPixel, lStride);
-
     this.m_bmpCanvas = bmpCanvas;
+
+    this.m_drawImageCommand  = new SimpleCommand<int>(
+        parameter => this.drawImageTaskAsync(parameter),
+        _ => this.canRunTask()
+    );
+    this.m_clearImageCommand = new SimpleCommand<int>(
+        parameter => this.m_trgModel.clearImage(parameter)
+    );
+
+    this.m_progress  = new System.Progress<int>(updateProgress);
+    this.m_isRunning = false;
 }
 
 
@@ -69,6 +82,33 @@ public  GameScreenViewModel()
 //
 //    Public Member Functions.
 //
+
+//----------------------------------------------------------------
+/**   タスクを実行可能か判定する。
+**
+**/
+public  virtual  bool
+canRunTask()
+{
+    return ( ! this.IsRunning );
+}
+
+//----------------------------------------------------------------
+/**   モデルのタスクを非同期で実行する。
+**
+**/
+public  virtual  async  void
+drawImageTaskAsync(int parameter)
+{
+    this.IsRunning  = true;
+
+    Task<int>  task = Task.Run<int>(
+        () => this.executeCommand(this.m_progress, parameter)
+    );
+    int  result = await task;
+
+    this.IsRunning  = false;
+}
 
 
 //========================================================================
@@ -82,6 +122,24 @@ public  GameScreenViewModel()
 **/
 public  event PropertyChangedEventHandler?  PropertyChanged;
 
+
+//----------------------------------------------------------------
+/**   タスクを実行するコマンドを取得するプロパティ。
+**
+**/
+public  virtual  ICommand
+ClearImageCommand {
+    get { return  this.m_clearImageCommand; }
+}
+
+//----------------------------------------------------------------
+/**   タスクを実行するコマンドを取得するプロパティ。
+**
+**/
+public  virtual  ICommand
+DrawImageCommand {
+    get { return  this.m_drawImageCommand; }
+}
 
 //----------------------------------------------------------------
 /**
@@ -113,6 +171,28 @@ SourceBitmap {
 //
 
 //----------------------------------------------------------------
+/**   モデルのタスクを実行する。
+**
+**/
+
+protected  virtual  int
+executeCommand(
+        System.IProgress<int>   progress,
+        int                     parameter)
+{
+    int  interval = 2000 / parameter;
+    int  count    = parameter;
+
+    for ( int i = 1; i <= count; ++ i ) {
+        this.m_trgModel.drawSampleImage();
+        progress.Report(i);
+        System.Threading.Thread.Sleep(interval);
+    }
+
+    return ( 0 );
+}
+
+//----------------------------------------------------------------
 /**
 **
 **/
@@ -133,19 +213,37 @@ raisePropertyChanged(
             this, new PropertyChangedEventArgs(propertyName));
 }
 
+//----------------------------------------------------------------
+/**
+**
+**/
+protected  virtual  void
+updateProgress(int progressValue)
+{
+    this.m_bmpCanvas.Lock();
+    this.m_mainImage.copyImage(this.m_trgModel.ImageBuffer);
+    this.m_bmpCanvas.AddDirtyRect(
+            new Int32Rect(0, 0, this.m_imgWidth, this.m_imgHeight)
+    );
+    this.m_bmpCanvas.Unlock();
+}
+
 
 //========================================================================
 //
 //    Member Variables.
 //
 
-private  readonly   FullColorImage              m_mainImage;
+private  readonly   FullColorImage          m_mainImage;
 
-private  readonly   FullColorImage              m_imgBuffer;
-private  readonly   int                         m_imgWidth;
-private  readonly   int                         m_imgHeight;
+private  readonly   FullColorImage          m_imgBuffer;
+private  readonly   int                     m_imgWidth;
+private  readonly   int                     m_imgHeight;
 
-private  readonly   System.IProgress<int>       m_progress;
+private  readonly   System.IProgress<int>   m_progress;
+
+private  readonly   SimpleCommand<int>      m_drawImageCommand;
+private  readonly   SimpleCommand<int>      m_clearImageCommand;
 
 private  WriteableBitmap    m_bmpCanvas;
 
