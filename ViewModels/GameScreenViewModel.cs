@@ -110,7 +110,7 @@ canRunTask()
 **
 **/
 
-public  virtual  async  void
+public  virtual  void
 clearImageTask(int parameter)
 {
     this.m_trgModel.clearImage(parameter);

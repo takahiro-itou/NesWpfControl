@@ -48,6 +48,7 @@ public  void
 setViewModel(
         GameScreenViewModel viewModel)
 {
+    m_viewModel = viewModel;
     DataContext = viewModel;
 }
 
@@ -177,17 +178,17 @@ MarginAreaColor
 }
 
 //----------------------------------------------------------------
-/**   SourcePicture プロパティ
+/**   SourceBitmap プロパティ
 **
 **/
 [Browsable(true)
   , Description("描画領域")
   , Category("表示")
 ]
-public  System.Windows.Controls.Image
-SourcePicture
+public  System.Windows.Media.Imaging.WriteableBitmap
+SourceBitmap
 {
-    get { return  this.picView; }
+    get { return  DataContext.SourceBitmap; }
 }
 
 
@@ -195,6 +196,9 @@ SourcePicture
 //
 //    Member Variables.
 //
+
+/**   ビューモデルクラス。  **/
+private  GameScreenViewModel    m_viewModel;
 
 /**   イメージレンダラ。    **/
 private NesDbgWrap.Images.BitmapRenderer    m_bitmapRenderer
