@@ -22,8 +22,6 @@ using System.Windows.Threading;
 
 using WpfControl.Common;
 
-using NesWpfControl.Models;
-
 using FullColorImage = NesDbgWrap.Images.FullColorImage;
 
 
@@ -54,7 +52,7 @@ GameScreenViewModel(
     WriteableBitmap     bmpCanvas;
 
     this.m_dispatcher = dispatcher;
-'    model.BitmapChanged += handleBitmapChangedEvent;
+    //  model.BitmapChanged += handleBitmapChangedEvent;
 
     bmpCanvas = new WriteableBitmap(
             nWidth, nHeight, 96, 96,
@@ -69,7 +67,6 @@ GameScreenViewModel(
     this.m_mainImage.createImage(nWidth, nHeight, cbPixel, lStride, ptrBuf);
     bmpCanvas.Unlock();
 
-    this.m_imgBuffer.allocateImage(nWidth, nHeight, cbPixel, lStride);
     this.m_bmpCanvas = bmpCanvas;
 
     this.m_drawImageCommand  = new SimpleCommand<int>(
@@ -113,7 +110,7 @@ canRunTask()
 public  virtual  void
 clearImageTask(int parameter)
 {
-    this.m_trgModel.clearImage(parameter);
+    //  this.m_trgModel.clearImage(parameter);
 }
 
 //----------------------------------------------------------------
@@ -183,10 +180,10 @@ Height {
 }
 
 //----------------------------------------------------------------
-/**
+/**   イメージバッファを取得するプロパティ。
 **
 **/
-public  virtual  FullColorImage
+public  virtual  FullColorImage?
 ImageBuffer  {
     get { return  null; }
 }
@@ -253,7 +250,7 @@ executeCommand(
     int  count    = parameter;
 
     for ( int i = 1; i <= count; ++ i ) {
-        this.m_trgModel.drawSampleImage();
+        // this.m_trgModel.drawSampleImage();
         progress.Report(i);
         System.Threading.Thread.Sleep(interval);
     }
@@ -310,14 +307,19 @@ handleBitmapChangedEvent()
 protected  virtual  int
 updateCanvasBitmap()
 {
+    FullColorImage?  ib = this.ImageBuffer;
+    if ( ib is null ) { return ( 0 ); }
+
+    FullColirImage  imgBuf  = ib;
+
     this.m_bmpCanvas.Lock();
     this.m_mainImage.copyImage(this.ImageBuffer);
     this.m_bmpCanvas.AddDirtyRect(
-            new Int32Rect(0, 0, this.m_imgWidth, this.m_imgHeight)
+            new Int32Rect(0, 0, this.m_scWidth, this.m_scHeight)
     );
     this.m_bmpCanvas.Unlock();
 
-    return ( 0 );
+    return ( 1 );
 }
 
 //----------------------------------------------------------------
@@ -327,12 +329,6 @@ updateCanvasBitmap()
 protected  virtual  void
 updateProgress(int progressValue)
 {
-    this.m_bmpCanvas.Lock();
-    this.m_mainImage.copyImage(this.m_trgModel.ImageBuffer);
-    this.m_bmpCanvas.AddDirtyRect(
-            new Int32Rect(0, 0, this.m_imgWidth, this.m_imgHeight)
-    );
-    this.m_bmpCanvas.Unlock();
 }
 
 

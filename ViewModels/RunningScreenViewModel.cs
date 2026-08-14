@@ -12,6 +12,11 @@
 **                                                                      **
 *************************************************************************/
 
+using System.Windows.Threading;
+
+using NesWpfControl.Models;
+
+using FullColorImage = NesDbgWrap.Images.FullColorImage;
 using NesPpuManager  = NesDbgWrap.NesMan.BasePpuCore;
 
 
@@ -36,9 +41,56 @@ RunningScreenViewModel(
     : base(dispatcher)
 {
     this.m_imgBuffer = new FullColorImage();
+    this.m_imgBuffer.allocateImage(
+            base.Width, base.Height, base.BytesPerPixel, base.LineStride);
+
     this.m_trgModel  = new PpuManagerModel(
-            base.Width, base.Height, base.BytesPerbPixel, base.LineStride);
+            base.Width, base.Height, base.BytesPerPixel, base.LineStride);
 }
+
+
+//========================================================================
+//
+//    Properties.
+//
+
+//----------------------------------------------------------------
+/**   イメージバッファを取得するプロパティ。
+**
+**/
+public  virtual  FullColorImage?
+ImageBuffer  {
+    get { return  this.m_imgBuffer; }
+}
+
+
+//========================================================================
+//
+//    Protected Member Functions.
+//
+
+//----------------------------------------------------------------
+/**   モデルのタスクを実行する。
+**
+**/
+
+protected  override  int
+executeCommand(
+        System.IProgress<int>   progress,
+        int                     parameter)
+{
+    int  interval = 2000 / parameter;
+    int  count    = parameter;
+
+    for ( int i = 1; i <= count; ++ i ) {
+        this.m_trgModel.drawSampleImage();
+        progress.Report(i);
+        System.Threading.Thread.Sleep(interval);
+    }
+
+    return ( 0 );
+}
+
 
 //========================================================================
 //
