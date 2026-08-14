@@ -18,6 +18,7 @@ using System.Windows.Input;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 
 using WpfControl.Common;
 
@@ -41,7 +42,9 @@ public  class  GameScreenViewModel : INotifyPropertyChanged
 **
 **/
 public
-GameScreenViewModel()
+GameScreenViewModel(
+        Dispatcher      dispatcher,
+        PpuManagerModel model)
 {
     const  int  nWidth  = 256;
     const  int  nHeight = 240;
