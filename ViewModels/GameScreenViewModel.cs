@@ -25,6 +25,7 @@ using WpfControl.Common;
 using NesWpfControl.Models;
 
 using FullColorImage = NesDbgWrap.Images.FullColorImage;
+using NesPpuManager  = NesDbgWrap.NesMan.BasePpuCore;
 
 
 namespace  NesWpfControl.ViewModels  {
@@ -44,7 +45,7 @@ public  class  GameScreenViewModel : INotifyPropertyChanged
 public
 GameScreenViewModel(
         Dispatcher      dispatcher,
-        PpuManagerModel model)
+        NesPpuManager   manPpu)
 {
     const  int  nWidth  = 256;
     const  int  nHeight = 240;
@@ -64,7 +65,7 @@ GameScreenViewModel(
     this.m_imgBuffer = new FullColorImage();
     this.m_imgWidth  = nWidth;
     this.m_imgHeight = nHeight;
-    this.m_trgModel = new PpuManagerModel(nWidth, nHeight, cbPixel, lStride);
+    this.m_trgModel  = new PpuManagerModel(nWidth, nHeight, cbPixel, lStride);
 
     bmpCanvas.Lock();
     cbPixel = (bmpCanvas.Format.BitsPerPixel + 7) >> 3;
