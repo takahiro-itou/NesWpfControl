@@ -188,7 +188,7 @@ MarginAreaColor
 public  System.Windows.Media.Imaging.WriteableBitmap
 SourceBitmap
 {
-    get { return  DataContext.SourceBitmap; }
+    get { return  this.m_viewModel.SourceBitmap; }
 }
 
 
@@ -198,7 +198,7 @@ SourceBitmap
 //
 
 /**   ビューモデルクラス。  **/
-private  GameScreenViewModel    m_viewModel;
+private  GameScreenViewModel?   m_viewModel;
 
 /**   イメージレンダラ。    **/
 private NesDbgWrap.Images.BitmapRenderer    m_bitmapRenderer
