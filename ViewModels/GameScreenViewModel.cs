@@ -54,6 +54,8 @@ GameScreenViewModel(
     System.IntPtr       ptrBuf;
     WriteableBitmap     bmpCanvas;
 
+    this.m_dispatcher = dispatcher;
+
     bmpCanvas = new WriteableBitmap(
             nWidth, nHeight, 96, 96,
             PixelFormats.Pbgra32, null);
@@ -205,9 +207,15 @@ executeCommand(
 /**
 **
 **/
-protected  virtual  void
+protected  virtual  int
 raiseCanExecuteChanged()
 {
+    this.m_dispatcher.Invoke(
+        () => {
+        }
+    );
+
+    return ( 0 );
 }
 
 //----------------------------------------------------------------
@@ -243,6 +251,7 @@ updateProgress(int progressValue)
 //    Member Variables.
 //
 
+private  readonly   Dispatcher              m_dispatcher;
 private  readonly   FullColorImage          m_mainImage;
 
 private  readonly   PpuManagerModel         m_trgModel;
