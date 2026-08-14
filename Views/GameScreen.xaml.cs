@@ -1,4 +1,4 @@
-﻿//  -*-  coding: utf-8-with-signature-unix;        -*-  //
+﻿//  -*-  coding: utf-8-with-signature  -*-  //
 /*************************************************************************
 **                                                                      **
 **                  ----   NES Debugger Project   ----                  **
@@ -28,6 +28,24 @@ public  GameScreen()
 {
     InitializeComponent();
     m_imgBuffer = new System.Drawing.Bitmap(512, 480);
+}
+
+
+//========================================================================
+//
+//    Accessors.
+//
+
+//----------------------------------------------------------------
+/**   ビューモデルを設定する。
+**
+**/
+
+public  void
+setViewModel(
+        GameScreenViewModel viewModel)
+{
+    DataContext = viewModel;
 }
 
 

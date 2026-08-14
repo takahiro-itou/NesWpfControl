@@ -8,5 +8,5 @@
     mc:Ignorable="d"
     d:DesignHeight="240" d:DesignWidth="256"
 >
-  <Image Name="picView" />
+  <Image Stretch="None" Source="{Binding SourceBitmap}" />
 </UserControl>
