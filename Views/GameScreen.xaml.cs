@@ -185,10 +185,10 @@ MarginAreaColor
   , Description("描画領域")
   , Category("表示")
 ]
-public  System.Windows.Media.Imaging.WriteableBitmap
+public  System.Windows.Media.Imaging.WriteableBitmap?
 SourceBitmap
 {
-    get { return  this.m_viewModel.SourceBitmap; }
+    get { return  this.m_viewModel?.SourceBitmap; }
 }
 
 
