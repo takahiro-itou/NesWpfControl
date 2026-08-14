@@ -15,7 +15,10 @@
 using System.ComponentModel;
 using System.Windows.Controls;
 
+using NesWpfControl.ViewModels;
+
 namespace  NesWpfControl.Views  {
+
 
 public  partial class  GameScreen : UserControl
 {

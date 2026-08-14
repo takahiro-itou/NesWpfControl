@@ -55,6 +55,7 @@ GameScreenViewModel(
     WriteableBitmap     bmpCanvas;
 
     this.m_dispatcher = dispatcher;
+    model.BitmapChanged += handleBitmapChangedEvent;
 
     bmpCanvas = new WriteableBitmap(
             nWidth, nHeight, 96, 96,
@@ -81,7 +82,7 @@ GameScreenViewModel(
         _ => this.canRunTask()
     );
     this.m_clearImageCommand = new SimpleCommand<int>(
-        parameter => this.m_trgModel.clearImage(parameter)
+        parameter => clearImageTask(parameter)
     );
 
     this.m_progress  = new System.Progress<int>(updateProgress);
@@ -102,6 +103,17 @@ public  virtual  bool
 canRunTask()
 {
     return ( ! this.IsRunning );
+}
+
+//----------------------------------------------------------------
+/**   画像をクリアする。
+**
+**/
+
+public  virtual  async  void
+clearImageTask(int parameter)
+{
+    this.m_trgModel.clearImage(parameter);
 }
 
 //----------------------------------------------------------------
@@ -228,6 +240,38 @@ raisePropertyChanged(
 {
     PropertyChanged?.Invoke(
             this, new PropertyChangedEventArgs(propertyName));
+}
+
+//----------------------------------------------------------------
+/**   画像の更新通知を受け取ったら画面に反映させる。
+**
+**/
+
+protected  virtual  void
+handleBitmapChangedEvent()
+{
+    this.m_dispatcher.Invoke(
+        () => {
+            updateCanvasBitmap();
+        }
+    );
+}
+
+//----------------------------------------------------------------
+/**
+**
+**/
+protected  virtual  int
+updateCanvasBitmap()
+{
+    this.m_bmpCanvas.Lock();
+    this.m_mainImage.copyImage(this.m_trgModel.ImageBuffer);
+    this.m_bmpCanvas.AddDirtyRect(
+            new Int32Rect(0, 0, this.m_imgWidth, this.m_imgHeight)
+    );
+    this.m_bmpCanvas.Unlock();
+
+    return ( 0 );
 }
 
 //----------------------------------------------------------------
