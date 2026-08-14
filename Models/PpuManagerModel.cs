@@ -57,6 +57,7 @@ clearImage(int colBG)
 {
     this.m_imgBuffer.fillRectangle(
             0, 0, this.m_imgWidth, this.m_imgHeight, colBG);
+    notifyBitmapChanged();
 }
 
 //----------------------------------------------------------------
@@ -82,6 +83,7 @@ drawSampleImage()
     colBR = (rnd.Next(256) << 16) | cAlpha | 0x00800000;
 
     this.m_imgBuffer.drawSample(colBG, colTL, colTR, colBL, colBR);
+    notifyBitmapChanged();
 }
 
 
@@ -98,6 +100,19 @@ drawSampleImage()
 public  FullColorImage
 ImageBuffer {
     get { return  this.m_imgBuffer; }
+}
+
+
+//========================================================================
+//
+//    Public Events.
+//
+
+public  event  Action?  BitmapChanged;
+
+protected  void  notifyBitmapChanged()
+{
+    this.BitmapChanged?.Invoke();
 }
 
 
