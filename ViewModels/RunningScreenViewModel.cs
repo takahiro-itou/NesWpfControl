@@ -40,12 +40,9 @@ RunningScreenViewModel(
         NesPpuManager   manPpu)
     : base(dispatcher)
 {
-    this.m_imgBuffer = new FullColorImage();
-    this.m_imgBuffer.allocateImage(
-            base.Width, base.Height, base.BytesPerPixel, base.LineStride);
-
     this.m_trgModel  = new PpuManagerModel(
             base.Width, base.Height, base.BytesPerPixel, base.LineStride);
+    this.m_trgModel.BitmapChanged += handleBitmapChangedEvent;
 }
 
 
@@ -58,9 +55,9 @@ RunningScreenViewModel(
 /**   イメージバッファを取得するプロパティ。
 **
 **/
-public  virtual  FullColorImage?
+public  override  FullColorImage?
 ImageBuffer  {
-    get { return  this.m_imgBuffer; }
+    get { return  this.m_trgModel.ImageBuffer; }
 }
 
 
@@ -98,8 +95,6 @@ executeCommand(
 //
 
 private   readonly  PpuManagerModel         m_trgModel;
-
-private   readonly  FullColorImage          m_imgBuffer;
 
 
 }   //  End class  GameScreenViewModel

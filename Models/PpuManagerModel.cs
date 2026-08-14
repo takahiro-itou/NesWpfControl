@@ -13,6 +13,7 @@
 *************************************************************************/
 
 using FullColorImage = NesDbgWrap.Images.FullColorImage;
+using NesPpuManager  = NesDbgWrap.NesMan.BasePpuCore;
 
 
 namespace  NesWpfControl.Models  {
@@ -31,15 +32,18 @@ public  class  PpuManagerModel
 **/
 public
 PpuManagerModel(
-        int nWidth,
-        int nHeight,
-        int cbPixel,
-        int lStride)
+        NesPpuManager   manPpu,
+        int             nWidth,
+        int             nHeight,
+        int             cbPixel,
+        int             lStride)
 {
-    m_imgWidth  = nWidth;
-    m_imgHeight = nHeight;
-    m_imgBuffer = new FullColorImage();
-    this.m_imgBuffer.allocateImage(nWidth, nHeight, cbPixel, lStride);
+    this.m_manPpu   = manPpu;
+    this.m_imgBack  = new FullColorImage();
+    this.m_ibWidth  = nWidth;
+    this.m_ibHeight = nHeight;
+
+    this.m_imgBack.allocateImage(nWidth, nHeight, cbPixel, lStride);
 }
 
 
@@ -55,7 +59,7 @@ PpuManagerModel(
 public  virtual  void
 clearImage(int colBG)
 {
-    this.m_imgBuffer.fillRectangle(
+    this.m_imgBack.fillRectangle(
             0, 0, this.m_imgWidth, this.m_imgHeight, colBG);
     notifyBitmapChanged();
 }
@@ -82,7 +86,7 @@ drawSampleImage()
     colBL = (colBL | colBL <<  8) | cAlpha | 0x00008080;
     colBR = (rnd.Next(256) << 16) | cAlpha | 0x00800000;
 
-    this.m_imgBuffer.drawSample(colBG, colTL, colTR, colBL, colBR);
+    this.m_imgBack.drawSample(colBG, colTL, colTR, colBL, colBR);
     notifyBitmapChanged();
 }
 
@@ -99,7 +103,7 @@ drawSampleImage()
 
 public  FullColorImage
 ImageBuffer {
-    get { return  this.m_imgBuffer; }
+    get { return  this.m_imgBack; }
 }
 
 
@@ -121,10 +125,12 @@ protected  void  notifyBitmapChanged()
 //    Member Variables.
 //
 
-private  readonly   FullColorImage  m_imgBuffer;
+private   readonly  NesPpuManager   m_manPpu;
 
-private  readonly   int             m_imgWidth;
-private  readonly   int             m_imgHeight;
+private   readonly  FullColorImage  m_imgBack;
+
+private   readonly  int             m_ibWidth;
+private   readonly  int             m_ibHeight;
 
 
 }   //  End class  PpuManagerModel

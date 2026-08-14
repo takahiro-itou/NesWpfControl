@@ -310,7 +310,7 @@ updateCanvasBitmap()
     FullColorImage?  ib = this.ImageBuffer;
     if ( ib is null ) { return ( 0 ); }
 
-    FullColirImage  imgBuf  = ib;
+    FullColorImage  imgBuf  = ib;
 
     this.m_bmpCanvas.Lock();
     this.m_mainImage.copyImage(this.ImageBuffer);
