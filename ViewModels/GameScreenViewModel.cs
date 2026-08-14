@@ -25,7 +25,6 @@ using WpfControl.Common;
 using NesWpfControl.Models;
 
 using FullColorImage = NesDbgWrap.Images.FullColorImage;
-using NesPpuManager  = NesDbgWrap.NesMan.BasePpuCore;
 
 
 namespace  NesWpfControl.ViewModels  {
@@ -44,8 +43,7 @@ public  class  GameScreenViewModel : INotifyPropertyChanged
 **/
 public
 GameScreenViewModel(
-        Dispatcher      dispatcher,
-        NesPpuManager   manPpu)
+        Dispatcher      dispatcher)
 {
     const  int  nWidth  = 256;
     const  int  nHeight = 240;
@@ -56,16 +54,12 @@ GameScreenViewModel(
     WriteableBitmap     bmpCanvas;
 
     this.m_dispatcher = dispatcher;
-    model.BitmapChanged += handleBitmapChangedEvent;
+'    model.BitmapChanged += handleBitmapChangedEvent;
 
     bmpCanvas = new WriteableBitmap(
             nWidth, nHeight, 96, 96,
             PixelFormats.Pbgra32, null);
     this.m_mainImage = new FullColorImage();
-    this.m_imgBuffer = new FullColorImage();
-    this.m_imgWidth  = nWidth;
-    this.m_imgHeight = nHeight;
-    this.m_trgModel  = new PpuManagerModel(nWidth, nHeight, cbPixel, lStride);
 
     bmpCanvas.Lock();
     cbPixel = (bmpCanvas.Format.BitsPerPixel + 7) >> 3;
@@ -85,6 +79,11 @@ GameScreenViewModel(
     this.m_clearImageCommand = new SimpleCommand<int>(
         parameter => clearImageTask(parameter)
     );
+
+    this.m_scWidth  = nWidth;
+    this.m_scHeight = nHeight;
+    this.m_pixByte  = cbPixel;
+    this.m_lStride  = lStride;
 
     this.m_progress  = new System.Progress<int>(updateProgress);
     this.m_isRunning = false;
@@ -148,6 +147,15 @@ public  event PropertyChangedEventHandler?  PropertyChanged;
 
 
 //----------------------------------------------------------------
+/**
+**
+**/
+public  int
+BytesPerPixel {
+    get { return  this.m_pixByte; }
+}
+
+//----------------------------------------------------------------
 /**   タスクを実行するコマンドを取得するプロパティ。
 **
 **/
@@ -169,6 +177,24 @@ DrawImageCommand {
 /**
 **
 **/
+public  int
+Height {
+    get { return  this.m_scWidth; }
+}
+
+//----------------------------------------------------------------
+/**
+**
+**/
+public  virtual  FullColorImage
+ImageBuffer  {
+    get { return  null; }
+}
+
+//----------------------------------------------------------------
+/**
+**
+**/
 public  bool
 IsRunning  {
     get { return  this.m_isRunning; }
@@ -183,9 +209,28 @@ IsRunning  {
 /**
 **
 **/
+public  int
+LineStride {
+    get { return  this.m_lStride; }
+}
+
+//----------------------------------------------------------------
+/**
+**
+**/
 public  virtual  WriteableBitmap
 SourceBitmap {
     get { return  this.m_bmpCanvas; }
+}
+
+
+//----------------------------------------------------------------
+/**
+**
+**/
+public  int
+Width {
+    get { return  this.m_scWidth; }
 }
 
 
@@ -266,7 +311,7 @@ protected  virtual  int
 updateCanvasBitmap()
 {
     this.m_bmpCanvas.Lock();
-    this.m_mainImage.copyImage(this.m_trgModel.ImageBuffer);
+    this.m_mainImage.copyImage(this.ImageBuffer);
     this.m_bmpCanvas.AddDirtyRect(
             new Int32Rect(0, 0, this.m_imgWidth, this.m_imgHeight)
     );
@@ -299,20 +344,19 @@ updateProgress(int progressValue)
 private  readonly   Dispatcher              m_dispatcher;
 private  readonly   FullColorImage          m_mainImage;
 
-private  readonly   PpuManagerModel         m_trgModel;
-
-private  readonly   FullColorImage          m_imgBuffer;
-private  readonly   int                     m_imgWidth;
-private  readonly   int                     m_imgHeight;
+protected readonly  int                     m_scWidth;
+protected readonly  int                     m_scHeight;
+protected readonly  int                     m_pixByte;
+protected readonly  int                     m_lStride;
 
 private  readonly   System.IProgress<int>   m_progress;
 
 private  readonly   SimpleCommand<int>      m_drawImageCommand;
 private  readonly   SimpleCommand<int>      m_clearImageCommand;
 
-private  WriteableBitmap    m_bmpCanvas;
-
 private  bool               m_isRunning;
+
+private   WriteableBitmap   m_bmpCanvas;
 
 
 }   //  End class  GameScreenViewModel
