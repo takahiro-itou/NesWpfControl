@@ -90,7 +90,7 @@ clearScreen()
 public  virtual  void
 drawScreen()
 {
-    this.m_wManPpu?.drawScreen();
+    this.m_ppuModel?.drawSampleImage();
 }
 
 //----------------------------------------------------------------
@@ -209,9 +209,8 @@ SourceBitmap
 private   GameScreenViewModel?      m_viewModel;
 
 /**   PPU マネージャ。      **/
-private   NesPpuManager?            m_wManPpu;
-
 private   PpuManagerModel?          m_ppuModel;
+
 
 /**   イメージレンダラ。    **/
 private NesDbgWrap.Images.BitmapRenderer    m_bitmapRenderer
