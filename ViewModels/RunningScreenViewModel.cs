@@ -41,7 +41,8 @@ RunningScreenViewModel(
     : base(dispatcher)
 {
     this.m_trgModel  = new PpuManagerModel(
-            base.Width, base.Height, base.BytesPerPixel, base.LineStride);
+            manPpu,  base.Width * 2, base.Height * 2,
+            base.BytesPerPixel, base.LineStride * 2);
     this.m_trgModel.BitmapChanged += handleBitmapChangedEvent;
 }
 

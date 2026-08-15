@@ -60,7 +60,7 @@ public  virtual  void
 clearImage(int colBG)
 {
     this.m_imgBack.fillRectangle(
-            0, 0, this.m_imgWidth, this.m_imgHeight, colBG);
+            0, 0, this.m_ibWidth, this.m_ibHeight, colBG);
     notifyBitmapChanged();
 }
 
