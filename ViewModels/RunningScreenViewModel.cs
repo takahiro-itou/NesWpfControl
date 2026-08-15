@@ -46,6 +46,20 @@ RunningScreenViewModel(
     this.m_trgModel.BitmapChanged += handleBitmapChangedEvent;
 }
 
+//----------------------------------------------------------------
+/**   コンストラクタ。
+**
+**/
+public
+RunningScreenViewModel(
+        Dispatcher      dispatcher,
+        PpuManagerModel ppuModel)
+    : base(dispatcher)
+{
+    this.m_trgModel  = ppuModel;
+    this.m_trgModel.BitmapChanged += handleBitmapChangedEvent;
+}
+
 
 //========================================================================
 //
