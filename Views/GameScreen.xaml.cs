@@ -90,7 +90,7 @@ clearScreen()
 public  virtual  void
 drawScreen()
 {
-    this.m_ppuModel?.drawSampleImage();
+    this.m_ppuModel?.drawScreenImage();
 }
 
 //----------------------------------------------------------------
