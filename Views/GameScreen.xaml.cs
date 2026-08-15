@@ -112,7 +112,7 @@ setupPpuManager(NesDbgWrap.NesMan.BasePpuCore manPpu)
 {
     RunningScreenViewModel  vm;
 
-    this.m_ppuModel = new PpuModelManager(manPpu, 512, 480, 4, 2048);
+    this.m_ppuModel = new PpuManagerModel(manPpu, 512, 480, 4, 2048);
     vm  = new RunningScreenViewModel(this.Dispatcher, this.m_ppuModel);
 
     setViewModel(vm);
