@@ -15,7 +15,11 @@
 using System.ComponentModel;
 using System.Windows.Controls;
 
+using NesWpfControl.Models;
 using NesWpfControl.ViewModels;
+
+using NesPpuManager  = NesDbgWrap.NesMan.BasePpuCore;
+
 
 namespace  NesWpfControl.Views  {
 
@@ -96,19 +100,7 @@ drawScreen()
 public  virtual  System.Boolean
 initializeScreenImage(int W, int H)
 {
-    IntPtr  hDC;
-    System.Drawing.Graphics grpBuffer;
-
-    grpBuffer = System.Drawing.Graphics.FromImage(m_imgBuffer);
-
-    hDC = grpBuffer.GetHdc();
-    if ( m_screenImage == null ) {
-        m_screenImage = m_bitmapRenderer.createImage(hDC, W, H);
-    }
-    grpBuffer.ReleaseHdc(hDC);
-    grpBuffer.Dispose();
-
-    return true;
+    return ( true );
 }
 
 //----------------------------------------------------------------
@@ -118,13 +110,29 @@ initializeScreenImage(int W, int H)
 public  virtual  System.Boolean
 setupPpuManager(NesDbgWrap.NesMan.BasePpuCore manPpu)
 {
-    if ( this.m_screenImage == null ) {
-        return  false;
-    }
-    manPpu.TargetImage  = this.m_screenImage;
-    this.m_wManPpu  = manPpu;
+    RunningScreenViewModel  vm;
 
-    return  true;
+    this.m_ppuModel = new PpuModelManager(manPpu, 512, 480, 4, 2048);
+    vm  = new RunningScreenViewModel(this.Dispatcher, this.m_ppuModel);
+
+    setViewModel(vm);
+    return ( true );
+}
+
+//----------------------------------------------------------------
+/**   PPU を設定する。
+**
+**/
+public  virtual  System.Boolean
+setupPpuModel(PpuManagerModel ppuModel)
+{
+    RunningScreenViewModel  vm;
+
+    this.m_ppuModel = ppuModel;
+    vm  = new RunningScreenViewModel(this.Dispatcher, ppuModel);
+
+    setViewModel(vm);
+    return ( true );
 }
 
 //----------------------------------------------------------------
@@ -198,14 +206,16 @@ SourceBitmap
 //
 
 /**   ビューモデルクラス。  **/
-private  GameScreenViewModel?   m_viewModel;
+private   GameScreenViewModel?      m_viewModel;
+
+/**   PPU マネージャ。      **/
+private   NesPpuManager?            m_wManPpu;
+
+private   PpuManagerModel?          m_ppuModel;
 
 /**   イメージレンダラ。    **/
 private NesDbgWrap.Images.BitmapRenderer    m_bitmapRenderer
     = new NesDbgWrap.Images.BitmapRenderer();
-
-/**   PPU マネージャ。      **/
-private NesDbgWrap.NesMan.BasePpuCore?      m_wManPpu;
 
 /**   イメージ用バッファ。  **/
 System.Drawing.Bitmap                       m_imgBuffer;
