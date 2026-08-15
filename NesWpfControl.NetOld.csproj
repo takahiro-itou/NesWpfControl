@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <AssemblyName>NesWpfControl</AssemblyName>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>10.0</LangVersion>
+    <Nullable>enable</Nullable>
+    <Platforms>x64;x86</Platforms>
+    <RootNamespace>NesWpfControl</RootNamespace>
+    <TargetFrameworks>
+      net48;
+    </TargetFrameworks>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <Import Project="..\Props\OutputLibs.props" />
+
+  <ItemGroup>
+    <PackageReference Include="System.Drawing.Common" Version="10.0.*" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Import Include="System.Drawing" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
+    <ProjectReference Include="..\Cli.NetFramework4.8\Wrapper.Net48.vcxproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\WpfControl\WpfControl.NetOld.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="Models\PpuManagerModel.cs" />
+    <Compile Include="ViewModels\GameScreenViewModel.cs" />
+    <Compile Include="ViewModels\RunningScreenViewModel.cs" />
+    <Compile Include="Views\GameScreen.xaml.cs" />
+  </ItemGroup>
+
+</Project>
