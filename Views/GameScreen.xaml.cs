@@ -34,7 +34,6 @@ public  partial class  GameScreen : UserControl
 public  GameScreen()
 {
     InitializeComponent();
-    m_imgBuffer = new System.Drawing.Bitmap(512, 480);
 }
 
 
@@ -69,18 +68,8 @@ setViewModel(
 public  virtual  void
 clearScreen()
 {
-    System.Drawing.Bitmap   imgCanvas;
-    System.Drawing.Graphics grpCanvas;
-
-    //imgCanvas = new System.Drawing.Bitmap(picView.Width, picView.Height);
-    imgCanvas = new System.Drawing.Bitmap(256, 240);
-    grpCanvas = System.Drawing.Graphics.FromImage(imgCanvas);
-
-    grpCanvas.FillRectangle(
-            System.Drawing.Brushes.White, grpCanvas.VisibleClipBounds);
-    grpCanvas.Dispose();
-
-    //  picView.Image = imgCanvas;
+    int  colBG  = unchecked((int)0x80000000);
+    this.m_ppuModel?.clearScreenImage(colBG);
 }
 
 //----------------------------------------------------------------
