@@ -142,25 +142,6 @@ setupPpuModel(PpuManagerModel ppuModel)
 public  virtual  void
 showScreen()
 {
-    System.Drawing.Bitmap   imgCanvas;
-    System.Drawing.Graphics grpCanvas;
-    IntPtr  hDC;
-    System.Drawing.Brush    brushBG;
-    System.Drawing.Color    colorBG;
-
-    imgCanvas = this.m_imgBuffer;
-    grpCanvas = System.Drawing.Graphics.FromImage(imgCanvas);
-
-    colorBG = System.Drawing.Color.FromArgb(0xFF, 0x00, 0x00, 0xFF);
-    brushBG = new System.Drawing.SolidBrush(colorBG);
-    grpCanvas.FillRectangle(brushBG, grpCanvas.VisibleClipBounds);
-
-    hDC = grpCanvas.GetHdc();
-    m_bitmapRenderer.drawImage(hDC, 0, 0, 256, 240, 0, 0);
-    grpCanvas.ReleaseHdc(hDC);
-    grpCanvas.Dispose();
-
-    //  picView.Image = imgCanvas;
 }
 
 
