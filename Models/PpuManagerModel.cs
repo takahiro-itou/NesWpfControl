@@ -67,32 +67,6 @@ clearScreenImage(int colBG)
 }
 
 //----------------------------------------------------------------
-/**   サンプル画像を描画する。
-**
-**/
-public  virtual  void
-drawSampleImage()
-{
-    int     cAlpha;
-    int     colBG, colTL, colTR, colBL, colBR;
-    System.Random   rnd = new System.Random();
-
-    //  色を適当に決める。背景はある程度明るい色
-    cAlpha  = 255 << 24;
-    colBG = rnd.Next(16777216) | cAlpha | 0x00808080;
-
-    //  色を適当に決める。
-    colTL = rnd.Next(256) | cAlpha | 0x00000080;
-    colTR = (rnd.Next(256) <<  8) | cAlpha | 0x00008080;
-    colBL = rnd.Next(256);
-    colBL = (colBL | colBL <<  8) | cAlpha | 0x00008080;
-    colBR = (rnd.Next(256) << 16) | cAlpha | 0x00800000;
-
-    this.m_imgBack.drawSample(colBG, colTL, colTR, colBL, colBR);
-    notifyBitmapChanged();
-}
-
-//----------------------------------------------------------------
 /**   画面イメージを描画する。
 **
 **/
@@ -101,6 +75,16 @@ drawScreenImage()
 {
     this.m_wManPpu?.drawScreen();
     notifyBitmapChanged();
+}
+
+//----------------------------------------------------------------
+/**   イメージが変更されたことを通知する。
+**
+**/
+public  virtual  void
+notifyBitmapChanged()
+{
+    this.BitmapChanged?.Invoke();
 }
 
 
@@ -126,11 +110,6 @@ ImageBuffer {
 //
 
 public  event  Action?  BitmapChanged;
-
-protected  void  notifyBitmapChanged()
-{
-    this.BitmapChanged?.Invoke();
-}
 
 
 //========================================================================
