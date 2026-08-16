@@ -181,17 +181,7 @@ private   GameScreenViewModel?      m_viewModel;
 /**   PPU マネージャ。      **/
 private   PpuManagerModel?          m_ppuModel;
 
-
-/**   イメージレンダラ。    **/
-private NesDbgWrap.Images.BitmapRenderer    m_bitmapRenderer
-    = new NesDbgWrap.Images.BitmapRenderer();
-
-/**   イメージ用バッファ。  **/
-System.Drawing.Bitmap                       m_imgBuffer;
-
-private NesDbgWrap.Images.FullColorImage?   m_screenImage;
-
-private System.Drawing.Color    m_marginColor;
+private   System.Drawing.Color      m_marginColor;
 
 }   //  End class  GameScreen
 
