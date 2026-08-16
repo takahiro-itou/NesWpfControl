@@ -77,6 +77,16 @@ drawScreenImage()
     notifyBitmapChanged();
 }
 
+//----------------------------------------------------------------
+/**   イメージが変更されたことを通知する。
+**
+**/
+public  virtual  void
+notifyBitmapChanged()
+{
+    this.BitmapChanged?.Invoke();
+}
+
 
 //========================================================================
 //
@@ -100,11 +110,6 @@ ImageBuffer {
 //
 
 public  event  Action?  BitmapChanged;
-
-protected  void  notifyBitmapChanged()
-{
-    this.BitmapChanged?.Invoke();
-}
 
 
 //========================================================================
