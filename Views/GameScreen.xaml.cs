@@ -125,12 +125,13 @@ setupPpuModel(PpuManagerModel ppuModel)
 }
 
 //----------------------------------------------------------------
-/**   ゲーム画面を表示する。
+/**   ゲーム画面を更新する。
 **
 **/
 public  virtual  void
-showScreen()
+updateScreen()
 {
+    this.m_ppuModel?.updateBitmapChanged();
 }
 
 
