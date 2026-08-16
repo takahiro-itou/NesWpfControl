@@ -38,12 +38,14 @@ PpuManagerModel(
         int             cbPixel,
         int             lStride)
 {
-    this.m_manPpu   = manPpu;
-    this.m_imgBack  = new FullColorImage();
+    this.m_wManPpu  = manPpu;
     this.m_ibWidth  = nWidth;
     this.m_ibHeight = nHeight;
 
+    this.m_imgBack  = new FullColorImage();
     this.m_imgBack.allocateImage(nWidth, nHeight, cbPixel, lStride);
+
+    this.m_wManPpu.TargetImage  = this.m_imgBack;
 }
 
 
@@ -57,7 +59,7 @@ PpuManagerModel(
 **
 **/
 public  virtual  void
-clearImage(int colBG)
+clearScreenImage(int colBG)
 {
     this.m_imgBack.fillRectangle(
             0, 0, this.m_ibWidth, this.m_ibHeight, colBG);
@@ -87,6 +89,17 @@ drawSampleImage()
     colBR = (rnd.Next(256) << 16) | cAlpha | 0x00800000;
 
     this.m_imgBack.drawSample(colBG, colTL, colTR, colBL, colBR);
+    notifyBitmapChanged();
+}
+
+//----------------------------------------------------------------
+/**   画面イメージを描画する。
+**
+**/
+public  virtual  void
+drawScreenImage()
+{
+    this.m_wManPpu?.drawScreen();
     notifyBitmapChanged();
 }
 
@@ -125,7 +138,7 @@ protected  void  notifyBitmapChanged()
 //    Member Variables.
 //
 
-private   readonly  NesPpuManager   m_manPpu;
+private   readonly  NesPpuManager   m_wManPpu;
 
 private   readonly  FullColorImage  m_imgBack;
 
