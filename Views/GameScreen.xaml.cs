@@ -140,22 +140,6 @@ showScreen()
 //
 
 //----------------------------------------------------------------
-/**   MarginAreaColor プロパティ
-**
-**/
-[Browsable(true)
-  , Description("余白部分の背景色")
-  , Category("表示")
-]
-[DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
-public  System.Drawing.Color
-MarginAreaColor
-{
-    get { return  this.m_marginColor; }
-    set { this.m_marginColor = value; }
-}
-
-//----------------------------------------------------------------
 /**   SourceBitmap プロパティ
 **
 **/
@@ -181,7 +165,6 @@ private   GameScreenViewModel?      m_viewModel;
 /**   PPU マネージャ。      **/
 private   PpuManagerModel?          m_ppuModel;
 
-private   System.Drawing.Color      m_marginColor;
 
 }   //  End class  GameScreen
 
