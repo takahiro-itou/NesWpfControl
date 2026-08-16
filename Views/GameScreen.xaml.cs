@@ -131,7 +131,7 @@ setupPpuModel(PpuManagerModel ppuModel)
 public  virtual  void
 updateScreen()
 {
-    this.m_ppuModel?.updateBitmapChanged();
+    this.m_ppuModel?.notifyBitmapChanged();
 }
 
 
