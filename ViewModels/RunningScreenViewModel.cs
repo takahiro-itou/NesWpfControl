@@ -81,29 +81,6 @@ ImageBuffer  {
 //    Protected Member Functions.
 //
 
-//----------------------------------------------------------------
-/**   モデルのタスクを実行する。
-**
-**/
-
-protected  override  int
-executeCommand(
-        System.IProgress<int>   progress,
-        int                     parameter)
-{
-    int  interval = 2000 / parameter;
-    int  count    = parameter;
-
-    for ( int i = 1; i <= count; ++ i ) {
-        this.m_trgModel.drawSampleImage();
-        progress.Report(i);
-        System.Threading.Thread.Sleep(interval);
-    }
-
-    return ( 0 );
-}
-
-
 //========================================================================
 //
 //    Member Variables.
