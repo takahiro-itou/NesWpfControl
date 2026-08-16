@@ -52,8 +52,6 @@ GameScreenViewModel(
     WriteableBitmap     bmpCanvas;
 
     this.m_dispatcher = dispatcher;
-    //  model.BitmapChanged += handleBitmapChangedEvent;
-
     bmpCanvas = new WriteableBitmap(
             nWidth, nHeight, 96, 96,
             PixelFormats.Pbgra32, null);
@@ -69,20 +67,11 @@ GameScreenViewModel(
 
     this.m_bmpCanvas = bmpCanvas;
 
-    this.m_drawImageCommand  = new SimpleCommand<int>(
-        parameter => this.drawImageTaskAsync(parameter),
-        _ => this.canRunTask()
-    );
-    this.m_clearImageCommand = new SimpleCommand<int>(
-        parameter => clearImageTask(parameter)
-    );
-
     this.m_scWidth  = nWidth;
     this.m_scHeight = nHeight;
     this.m_pixByte  = cbPixel;
     this.m_lStride  = lStride;
 
-    this.m_progress  = new System.Progress<int>(updateProgress);
     this.m_isRunning = false;
 }
 
@@ -93,41 +82,25 @@ GameScreenViewModel(
 //
 
 //----------------------------------------------------------------
-/**   タスクを実行可能か判定する。
+/**
 **
 **/
-public  virtual  bool
-canRunTask()
+public  virtual  int
+updateCanvasBitmap()
 {
-    return ( ! this.IsRunning );
-}
+    FullColorImage?  ib = this.ImageBuffer;
+    if ( ib is null ) { return ( 0 ); }
 
-//----------------------------------------------------------------
-/**   画像をクリアする。
-**
-**/
+    FullColorImage  imgBuf  = ib;
 
-public  virtual  void
-clearImageTask(int parameter)
-{
-    //  this.m_trgModel.clearImage(parameter);
-}
-
-//----------------------------------------------------------------
-/**   モデルのタスクを非同期で実行する。
-**
-**/
-public  virtual  async  void
-drawImageTaskAsync(int parameter)
-{
-    this.IsRunning  = true;
-
-    Task<int>  task = Task.Run<int>(
-        () => this.executeCommand(this.m_progress, parameter)
+    this.m_bmpCanvas.Lock();
+    this.m_mainImage.copyImage(this.ImageBuffer);
+    this.m_bmpCanvas.AddDirtyRect(
+            new Int32Rect(0, 0, this.m_scWidth, this.m_scHeight)
     );
-    int  result = await task;
+    this.m_bmpCanvas.Unlock();
 
-    this.IsRunning  = false;
+    return ( 1 );
 }
 
 
@@ -150,24 +123,6 @@ public  event PropertyChangedEventHandler?  PropertyChanged;
 public  int
 BytesPerPixel {
     get { return  this.m_pixByte; }
-}
-
-//----------------------------------------------------------------
-/**   タスクを実行するコマンドを取得するプロパティ。
-**
-**/
-public  virtual  ICommand
-ClearImageCommand {
-    get { return  this.m_clearImageCommand; }
-}
-
-//----------------------------------------------------------------
-/**   タスクを実行するコマンドを取得するプロパティ。
-**
-**/
-public  virtual  ICommand
-DrawImageCommand {
-    get { return  this.m_drawImageCommand; }
 }
 
 //----------------------------------------------------------------
@@ -237,25 +192,18 @@ Width {
 //
 
 //----------------------------------------------------------------
-/**   モデルのタスクを実行する。
+/**   画像の更新通知を受け取ったら画面に反映させる。
 **
 **/
 
-protected  virtual  int
-executeCommand(
-        System.IProgress<int>   progress,
-        int                     parameter)
+protected  virtual  void
+handleBitmapChangedEvent()
 {
-    int  interval = 2000 / parameter;
-    int  count    = parameter;
-
-    for ( int i = 1; i <= count; ++ i ) {
-        // this.m_trgModel.drawSampleImage();
-        progress.Report(i);
-        System.Threading.Thread.Sleep(interval);
-    }
-
-    return ( 0 );
+    this.m_dispatcher.Invoke(
+        () => {
+            updateCanvasBitmap();
+        }
+    );
 }
 
 //----------------------------------------------------------------
@@ -285,72 +233,21 @@ raisePropertyChanged(
             this, new PropertyChangedEventArgs(propertyName));
 }
 
-//----------------------------------------------------------------
-/**   画像の更新通知を受け取ったら画面に反映させる。
-**
-**/
-
-protected  virtual  void
-handleBitmapChangedEvent()
-{
-    this.m_dispatcher.Invoke(
-        () => {
-            updateCanvasBitmap();
-        }
-    );
-}
-
-//----------------------------------------------------------------
-/**
-**
-**/
-protected  virtual  int
-updateCanvasBitmap()
-{
-    FullColorImage?  ib = this.ImageBuffer;
-    if ( ib is null ) { return ( 0 ); }
-
-    FullColorImage  imgBuf  = ib;
-
-    this.m_bmpCanvas.Lock();
-    this.m_mainImage.copyImage(this.ImageBuffer);
-    this.m_bmpCanvas.AddDirtyRect(
-            new Int32Rect(0, 0, this.m_scWidth, this.m_scHeight)
-    );
-    this.m_bmpCanvas.Unlock();
-
-    return ( 1 );
-}
-
-//----------------------------------------------------------------
-/**
-**
-**/
-protected  virtual  void
-updateProgress(int progressValue)
-{
-}
-
 
 //========================================================================
 //
 //    Member Variables.
 //
 
-private  readonly   Dispatcher              m_dispatcher;
-private  readonly   FullColorImage          m_mainImage;
+private   readonly  Dispatcher              m_dispatcher;
+private   readonly  FullColorImage          m_mainImage;
 
 protected readonly  int                     m_scWidth;
 protected readonly  int                     m_scHeight;
 protected readonly  int                     m_pixByte;
 protected readonly  int                     m_lStride;
 
-private  readonly   System.IProgress<int>   m_progress;
-
-private  readonly   SimpleCommand<int>      m_drawImageCommand;
-private  readonly   SimpleCommand<int>      m_clearImageCommand;
-
-private  bool               m_isRunning;
+private   bool              m_isRunning;
 
 private   WriteableBitmap   m_bmpCanvas;
 

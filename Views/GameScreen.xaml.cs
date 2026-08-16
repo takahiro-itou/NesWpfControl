@@ -34,7 +34,6 @@ public  partial class  GameScreen : UserControl
 public  GameScreen()
 {
     InitializeComponent();
-    m_imgBuffer = new System.Drawing.Bitmap(512, 480);
 }
 
 
@@ -69,18 +68,8 @@ setViewModel(
 public  virtual  void
 clearScreen()
 {
-    System.Drawing.Bitmap   imgCanvas;
-    System.Drawing.Graphics grpCanvas;
-
-    //imgCanvas = new System.Drawing.Bitmap(picView.Width, picView.Height);
-    imgCanvas = new System.Drawing.Bitmap(256, 240);
-    grpCanvas = System.Drawing.Graphics.FromImage(imgCanvas);
-
-    grpCanvas.FillRectangle(
-            System.Drawing.Brushes.White, grpCanvas.VisibleClipBounds);
-    grpCanvas.Dispose();
-
-    //  picView.Image = imgCanvas;
+    int  colBG  = unchecked((int)0x80000000);
+    this.m_ppuModel?.clearScreenImage(colBG);
 }
 
 //----------------------------------------------------------------
@@ -136,31 +125,13 @@ setupPpuModel(PpuManagerModel ppuModel)
 }
 
 //----------------------------------------------------------------
-/**   ゲーム画面を表示する。
+/**   ゲーム画面を更新する。
 **
 **/
 public  virtual  void
-showScreen()
+updateScreen()
 {
-    System.Drawing.Bitmap   imgCanvas;
-    System.Drawing.Graphics grpCanvas;
-    IntPtr  hDC;
-    System.Drawing.Brush    brushBG;
-    System.Drawing.Color    colorBG;
-
-    imgCanvas = this.m_imgBuffer;
-    grpCanvas = System.Drawing.Graphics.FromImage(imgCanvas);
-
-    colorBG = System.Drawing.Color.FromArgb(0xFF, 0x00, 0x00, 0xFF);
-    brushBG = new System.Drawing.SolidBrush(colorBG);
-    grpCanvas.FillRectangle(brushBG, grpCanvas.VisibleClipBounds);
-
-    hDC = grpCanvas.GetHdc();
-    m_bitmapRenderer.drawImage(hDC, 0, 0, 256, 240, 0, 0);
-    grpCanvas.ReleaseHdc(hDC);
-    grpCanvas.Dispose();
-
-    //  picView.Image = imgCanvas;
+    this.m_ppuModel?.notifyBitmapChanged();
 }
 
 
@@ -168,22 +139,6 @@ showScreen()
 //
 //    Properties.
 //
-
-//----------------------------------------------------------------
-/**   MarginAreaColor プロパティ
-**
-**/
-[Browsable(true)
-  , Description("余白部分の背景色")
-  , Category("表示")
-]
-[DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
-public  System.Drawing.Color
-MarginAreaColor
-{
-    get { return  this.m_marginColor; }
-    set { this.m_marginColor = value; }
-}
 
 //----------------------------------------------------------------
 /**   SourceBitmap プロパティ
@@ -211,17 +166,6 @@ private   GameScreenViewModel?      m_viewModel;
 /**   PPU マネージャ。      **/
 private   PpuManagerModel?          m_ppuModel;
 
-
-/**   イメージレンダラ。    **/
-private NesDbgWrap.Images.BitmapRenderer    m_bitmapRenderer
-    = new NesDbgWrap.Images.BitmapRenderer();
-
-/**   イメージ用バッファ。  **/
-System.Drawing.Bitmap                       m_imgBuffer;
-
-private NesDbgWrap.Images.FullColorImage?   m_screenImage;
-
-private System.Drawing.Color    m_marginColor;
 
 }   //  End class  GameScreen
 
